@@ -39,25 +39,3 @@ export default function SearcBar ({onSearch}) {
     );
 };
 
-// ContactFormrm.propTypes = {
-//     onSubmit: PropTypes.func.isRequired,
-// }
-
-   // <>
-        // <Formik validationSchema={schema} onSubmit={handleSubmit} initialValues={initialValues}>
-        //     <FormContainer autoComplete="off">
-        //         <Label htmlFor="name">
-        //             <Span>Name</Span>
-        //                 <Input type="text" name="name"  />
-        //             <ErrorMessage name='name' component="div"/> 
-        //         </Label>
-        //          <Label htmlFor="number">
-        //           <Span>Number</Span>
-        //                 <Input type="tel" name="number" />
-        //             <ErrorMessage name='number' component="div"/> 
-        //         </Label>
-        //         <BtnAdd type="submit">Add contact</BtnAdd>
-        //     </FormContainer>
-        //     </Formik>
-        //     </>
-        

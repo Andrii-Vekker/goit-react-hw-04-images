@@ -1,5 +1,6 @@
 import { ImageGalleryItem, ImageGalleryItemImg } from "./ImageGalleryItem.styled";
 import PropTypes from 'prop-types';
+import { nanoid } from "nanoid";
 
 export default function ImageGalleryLIstItem({smallPic, tags, largePic, getModalPicture }) {
    function getIndex(largePic) {
@@ -9,7 +10,7 @@ export default function ImageGalleryLIstItem({smallPic, tags, largePic, getModal
   return (
       <>
       
-      <ImageGalleryItem>
+      <ImageGalleryItem key={nanoid()}>
             <ImageGalleryItemImg src={smallPic} alt={tags} onClick={() => getIndex(largePic)} />
       </ImageGalleryItem>
      
@@ -27,13 +28,3 @@ ImageGalleryLIstItem.propTypes = {
 
 };
 
-// ImageGalleryLIstItem.propTypes = {
-//   getModalPicture: PropTypes.func.isRequired,
-//   img: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       id: PropTypes.number.isRequired,
-//       webformatURL: PropTypes.string.isRequired , 
-//       tags: PropTypes.string.isRequired
-//     })
-//   )
-// }

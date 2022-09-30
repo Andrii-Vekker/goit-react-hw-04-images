@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useState, useEffect } from "react";
 import SearcBar from "components/Searchbar/Searchbar";
 import { AppStyle } from "./App.styled";
 import ImageGallery from "components/ImageGallery/ImageGallery";
@@ -10,103 +10,118 @@ import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 
 const KEY = "29175258-0e972b66084e1db5719a62740"
-const perPage = "12"
-export class App extends Component {
-  state = {
-    picture: [],
-    isLoading: false,
-    error: null,
-    page: 1,
-    search: "",
-    showModal: false,
-    imgURL: "",
-    
-  };
-  
-  fetchImg = async () => {
-    const { search, page } = this.state;
+
+
+export default function App() {
+  const [picture, setPicture] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [showModal, setShowModal] = useState(false);
+  const [imgURL, setImgURL] = useState("");
+
+ useEffect(() => {
+ if (!search) {
+  return
+   };
+       const fetchImg = async () => {
     const response = await axios.get(`https://pixabay.com/api/?q=${search}&page=${page}
-    &key=${KEY}&image_type=photo&orientation=horizontal&per_page=${perPage}`);
+    &key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`);
     return response.data;
 };
-
-componentDidMount() {
-  window.addEventListener("keydown", this.hadndleKeyDown);
-};
-
-  componentWillUnmount() {
-    window.removeEventListener("keydown", this.hadndleKeyDown);
-  };
-
-  async componentDidUpdate(_, prevState) {
-    const { fetchImg, } = this;
-    const { page, search, } = this.state;
-       
-    if (prevState.page !== page || 
-      prevState.search !== search) {
-      try {      
-        this.setState({isLoading: true})
-        const data = await fetchImg(page, search).then(data => data.hits)
-        this.setState(({ picture }) => {
-          
-          return {
-          
-            picture: [...picture, ...data]
-          };
-      });
-   } catch (error) {
-     toast.error("Error loading. Try again")
-   } finally {
-     this.setState({isLoading:false})
+    const findImg = async () => {
+      try {
+        setIsLoading(false)
+        const data = await fetchImg(page, search)
+         data.hits.length === 0 ? toast.error("no Images") : setPicture((prev) => [...prev, ...data.hits])
+      } catch (error) {
+        setError(toast.error("Error loading. Try again"))
+      } finally {
+        setIsLoading(false)
       };
+    };
+   findImg()
+  
+  }, [search, page]);
+
+//   useEffect(() => {
+//      if (!search) {
+//   return
+//     };
+//     const fetchImg = async () => {
+//       setIsLoading(true);
+//     const response = await axios.get(`https://pixabay.com/api/?q=${search}&page=${page}
+//     &key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`);
+//     return response.data;
+// };
+//  try {
+//   setIsLoading(true);
+//    fetchImg(page, search).then(data => setPicture((prev) => [...prev, ...data.hits]));
+         
+//     } catch (error) {
+//    setError(toast.error("Error loading. Try again"));
+//     } finally {
+//    setIsLoading(false);
+//     };
+
    
-    };
-  };
   
-  hadndleKeyDown = e => {
-    if (e.code === "Escape") {
-      this.setState({ showModal: false })
+//   }, [search, page]);
+
+  useEffect(() => {
+    window.addEventListener("keydown", hadndleKeyDown);
+     return () => {window.removeEventListener("keydown", hadndleKeyDown);}
+  }, []);
+
+  
+  
+  
+
+
+ const hadndleKeyDown = e => {
+    setShowModal(() => {
+       if (e.code === "Escape") {
+         return false;
     };
+     })
   };
 
-  onSearch = (text) => {
-    const { name } = text
-    const { search } = this.state
-    if (search !== name) {
-      this.setState({ search: name, picture: [], page: 1 });
-    };
-  };
- 
-  loadMore = (e) => {
-    e.preventDefault()
-    this.setState(prevState => ({
-      page: prevState.page + 1
-    }));
-
+    const onSearch = (text) => {
+      const { name } = text;
+      setPicture([]);
+      setPage(1);
+      setSearch(() => {
+        if (search !== name) {
+          return name;
+        };
+      });
   };
   
-  toggleModal = (e) => {
-    if (e.target.nodeName === "IMG") {
-      this.setState(({ showModal }) => ({
-        showModal: !showModal
-      }));
-    };
+   const loadMore = (e) => {
+     e.preventDefault();
+     setPage(prev => prev + 1)
   };
   
-  close = () => {
-    this.setState({showModal: false})
-  }
+  const toggleModal = (e) => {
+    setShowModal(() => {
+      if (e.target.nodeName === "IMG") {
+        return !showModal;
+      };
+    });
+  };
   
-  getModalContent = (img) => {
-     this.setState({imgURL: img})
+  const close = () => {
+    setShowModal(false);
   };
 
-   render() {
-    const { picture, isLoading, error, showModal, imgURL } = this.state;
-     const { loadMore, onSearch, toggleModal, getModalContent, close } = this
-     const btnCondition = !isLoading && picture.length > 0
-     
-    return (
+    const getModalContent = (img) => {
+      setImgURL(img);
+  };
+  
+  const btnCondition = !isLoading && picture.length > 0
+
+  return (
       <AppStyle onClick={toggleModal}>
  <ToastContainer />
         {showModal && <ModalPic closeModal={close}><img src={imgURL} alt=""/></ModalPic>}
@@ -117,10 +132,25 @@ componentDidMount() {
         {btnCondition && <Button onClick={loadMore} />}
     </AppStyle>
   );
-  };
-};
+}
 
 
-
-
-
+////////////////////////////////////////////////
+//  useEffect(() => {
+//  if (!search) {
+//   return
+//     };
+//     const findImg = async () => {
+//       try {
+//         setIsLoading(false)
+//         const data = await fetchImg(page, search)
+//          data.hits.length === 0 ? toast.error("no Images") : setPicture(() => [...picture, ...data.hits])
+//       } catch (error) {
+//         toast.error("Error loading. Try again")
+//       } finally {
+//         setIsLoading(false)
+//       };
+//     };
+//    findImg()
+  
+//   }, [search, page]);
