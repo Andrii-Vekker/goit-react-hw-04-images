@@ -3,13 +3,14 @@ import SearcBar from "components/Searchbar/Searchbar";
 import { AppStyle } from "./App.styled";
 import ImageGallery from "components/ImageGallery/ImageGallery";
 import Button from "components/Button/Button";
-import axios from "axios";
+// import axios from "axios";
+import { fetchImg } from "components/Api/Api";
 import Loader from "components/Loader/Loader";
 import ModalPic from "components/Modal/Modal";
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
 
-const KEY = "29175258-0e972b66084e1db5719a62740"
+// const KEY = "29175258-0e972b66084e1db5719a62740"
 
 
 export default function App() {
@@ -19,20 +20,15 @@ export default function App() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [imgURL, setImgURL] = useState("");
+  const [imgURL, setImgURL] = useState(null);
 
  useEffect(() => {
  if (!search) {
   return
    };
-       const fetchImg = async () => {
-    const response = await axios.get(`https://pixabay.com/api/?q=${search}&page=${page}
-    &key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`);
-    return response.data;
-};
-    const findImg = async () => {
+     const findImg = async () => {
       try {
-        setIsLoading(false)
+        setIsLoading(true)
         const data = await fetchImg(page, search)
          data.hits.length === 0 ? toast.error("no Images") : setPicture((prev) => [...prev, ...data.hits])
       } catch (error) {
@@ -45,39 +41,10 @@ export default function App() {
   
   }, [search, page]);
 
-//   useEffect(() => {
-//      if (!search) {
-//   return
-//     };
-//     const fetchImg = async () => {
-//       setIsLoading(true);
-//     const response = await axios.get(`https://pixabay.com/api/?q=${search}&page=${page}
-//     &key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`);
-//     return response.data;
-// };
-//  try {
-//   setIsLoading(true);
-//    fetchImg(page, search).then(data => setPicture((prev) => [...prev, ...data.hits]));
-         
-//     } catch (error) {
-//    setError(toast.error("Error loading. Try again"));
-//     } finally {
-//    setIsLoading(false);
-//     };
-
-   
-  
-//   }, [search, page]);
-
   useEffect(() => {
     window.addEventListener("keydown", hadndleKeyDown);
      return () => {window.removeEventListener("keydown", hadndleKeyDown);}
   }, []);
-
-  
-  
-  
-
 
  const hadndleKeyDown = e => {
     setShowModal(() => {
