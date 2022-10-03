@@ -57,9 +57,7 @@ export default function App() {
       if (name !== search) {
          setPicture([]);
       setPage(1);
-      setSearch(() => {
-                return name;
-      });
+      setSearch(name);
       };
      };
   
