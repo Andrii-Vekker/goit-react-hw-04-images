@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import SearcBar from "components/Searchbar/Searchbar";
+import SearchBar from "components/Searchbar/Searchbar";
 import { AppStyle } from "./App.styled";
 import ImageGallery from "components/ImageGallery/ImageGallery";
 import Button from "components/Button/Button";
@@ -9,8 +9,6 @@ import Loader from "components/Loader/Loader";
 import ModalPic from "components/Modal/Modal";
 import { ToastContainer, toast } from 'react-toastify';
   import 'react-toastify/dist/ReactToastify.css';
-
-// const KEY = "29175258-0e972b66084e1db5719a62740"
 
 
 export default function App() {
@@ -56,14 +54,14 @@ export default function App() {
 
     const onSearch = (text) => {
       const { name } = text;
-      setPicture([]);
+      if (name !== search) {
+         setPicture([]);
       setPage(1);
       setSearch(() => {
-        if (search !== name) {
-          return name;
-        };
+                return name;
       });
-  };
+      };
+     };
   
    const loadMore = (e) => {
      e.preventDefault();
@@ -93,7 +91,7 @@ export default function App() {
  <ToastContainer />
         {showModal && <ModalPic closeModal={close}><img src={imgURL} alt=""/></ModalPic>}
         {error && (<p>UPS</p>)}
-        <SearcBar onSearch={onSearch}  />
+        <SearchBar onSearch={onSearch}  />
         {isLoading && <Loader />}
         {picture.length > 0 &&   <ImageGallery pictures={picture} getModalPic={getModalContent}/>}
         {btnCondition && <Button onClick={loadMore} />}

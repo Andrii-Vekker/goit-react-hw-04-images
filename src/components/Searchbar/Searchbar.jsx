@@ -1,6 +1,7 @@
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import { Header, SearchForm, SearchFormBtn, SearchFormBtnLabel, SearchInput } from './SearchBar.styled';
+import PropTypes from 'prop-types';
 
 const schema = yup.object().shape({
     name: yup.string().required("Please enter name of picture"),
@@ -11,7 +12,7 @@ const schema = yup.object().shape({
 const initialValues = {
         name: '',
 };
-export default function SearcBar ({onSearch}) {
+export default function SearchBar ({onSearch}) {
     const handleSubmit = (values) => {
         onSearch(values);
     };
@@ -39,3 +40,6 @@ export default function SearcBar ({onSearch}) {
     );
 };
 
+SearchBar.propTypes = {
+    onSearch: PropTypes.func.isRequired
+}
